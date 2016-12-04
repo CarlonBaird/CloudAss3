@@ -291,8 +291,8 @@
                   "autoUpgradeMinorVersion": true,
                   "settings": {
                     "fileUris": [
-                      "https://raw.githubusercontent.com/CarlonBaird/azure-quickstart-templates/master/201-vmss-bottle-autoscale-basedonservicebusqueue_org/installserver.sh",
-                      "https://raw.githubusercontent.com/CarlonBaird/azure-quickstart-templates/master/201-vmss-bottle-autoscale-basedonservicebusqueue_org/workserver.py"
+                      "https://raw.githubusercontent.com/CarlonBaird/CloudAss3/master/Sender/installserver.sh",
+                      "https://raw.githubusercontent.com/CarlonBaird/CloudAss3/master/Sender/sender.py"
                     ],
                     "commandToExecute": "bash installserver.sh"
                   }
