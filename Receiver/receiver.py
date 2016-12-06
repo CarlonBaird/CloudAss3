@@ -1,4 +1,7 @@
+#Carlon R. Baird
+
 from azure.servicebus import ServiceBusService, Message, Queue
+from azure.storage.table import TableService, Entity
 import datetime
 import threading 
 import time, math
@@ -8,13 +11,19 @@ bus_service = ServiceBusService(
     shared_access_key_name='RootManageSharedAccessKey',
     shared_access_key_value='0+T7xifpuFJ4HFCodk7D6E9bjyq0imsDE3NRzF2SMdE=')
 
+table_service = TableService(account_name='zanko', 
+	account_key='THUf0H1djCIiT8G8mosZvoZGLAVgY4v4uw4TBtoUZs00k/8QxNFnbf/cEiAkUeZ5ifFLfjUFfG4FDLg3GQJT/g==')
+
+table_service.create_table('Transactions', fail_on_exist=False)
+table_service.create_table('Failures', fail_on_exist=False)
+
 flag = True
+
 
 class myThread (threading.Thread):
 
     def __init__(self, threadID, name, counter):
         super(myThread, self).__init__()
-        # threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
         self.counter = counter
@@ -36,7 +45,18 @@ class myThread (threading.Thread):
     			'TransactionDate':jsonData['TransactionDate']
             }
             print(data)
-            # table_service.insert_entity('Transactions',data)
+            
+            #Monitoring Failures
+            if data['ProductName'] is 'Failure':
+                failure = {
+                    'PartitionKey':data['PartitionKey'],
+                    'RowKey':data['RowKey'],
+                    'Time':str(datetime.datetime.now()),
+                    'Status':'Failure'
+                }
+                
+            else:
+                table_service.insert_entity('Transactions',data)
             msg.delete()
         else:
             global flag 
@@ -51,4 +71,3 @@ if __name__=="__main__":
             threads[x].run()
             time.sleep(1)
     print(flag)
-
