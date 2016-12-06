@@ -4,6 +4,10 @@ import datetime
 import threading 
 import time, math
 import random
+import socket
+from bottle import route, run
+hostname = socket.gethostname()
+hostport = 2505
 
 bus_service = ServiceBusService(
     service_namespace='servicebusn2',
@@ -36,8 +40,15 @@ class myThread (threading.Thread):
     	data = str(data)
         msg = Message(data)
         bus_service.send_queue_message('sbqtest', msg)
-    	
-if __name__=="__main__":    
+        
+@route('/')
+def printHome():
+    text = "<h1>Welcome to Zanko Sender</h1>"
+    text = "<a href='./sendMessages'>"+"Click to send Messages"+"</a>"
+    return text
+
+@route('/sendmessages')
+def sendMessages():
     i = 1
     requests = 5000000
     batch_size = int (math.floor(requests/(3600)))
@@ -54,4 +65,8 @@ if __name__=="__main__":
         #clears thread list		
         threads.clear()
         time.sleep(1)
+        
+if __name__=="__main__":
+    run(host=hostname, port=hostport)
+    
         
