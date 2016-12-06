@@ -3,12 +3,14 @@ from azure.servicebus import ServiceBusService, Message, Queue
 import datetime
 import threading 
 import time, math
+import random
 
 bus_service = ServiceBusService(
     service_namespace='servicebusn2',
     shared_access_key_name='RootManageSharedAccessKey',
     shared_access_key_value='0+T7xifpuFJ4HFCodk7D6E9bjyq0imsDE3NRzF2SMdE=')
 
+ProductName = ['Financial Trap','Failure','No Trap']
 
 class myThread (threading.Thread):
 
@@ -27,7 +29,7 @@ class myThread (threading.Thread):
      			"TransactionID":self.counter,
      			"UserId":"A"+str(self.counter),
      			"SellerID":"S",
-     			"ProductName":"Financial Trap",
+     			"ProductName":random.choice(ProductName),
     			"SalePrice":str(self.counter * 2),
     			"TransactionDate":str(datetime.datetime.now())
     	}
