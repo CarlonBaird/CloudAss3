@@ -5,6 +5,11 @@ from azure.storage.table import TableService, Entity
 import datetime
 import threading 
 import time, math
+import socket
+from bottle import route, run
+
+hostname = socket.gethostname()
+hostport = 2500
 
 bus_service = ServiceBusService(
     service_namespace='servicebusn2',
@@ -18,7 +23,6 @@ table_service.create_table('Transactions', fail_on_exist=False)
 table_service.create_table('Failures', fail_on_exist=False)
 
 flag = True
-
 
 class myThread (threading.Thread):
 
@@ -61,8 +65,16 @@ class myThread (threading.Thread):
         else:
             global flag 
             flag = False
-            
-if __name__=="__main__":          
+
+@route('/')
+def printHome():
+    text = "<h1>Welcome to Zanko Receiver</h1>"
+    text = "<a href='./receiptofmessages'>"+"Click to receive Messages"+"</a>"
+    return text
+
+
+@route('/receiptofmessages')
+def receiveMessages():
     threads = {}
     while flag is True:
         for x in range(1,15):
@@ -71,3 +83,7 @@ if __name__=="__main__":
             threads[x].run()
             time.sleep(1)
     print(flag)
+
+            
+if __name__=="__main__":          
+    run(host=hostname, port=hostport)
